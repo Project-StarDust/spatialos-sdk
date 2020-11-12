@@ -1,0 +1,10 @@
+[package]
+name = "spatial_sdk"
+version = "0.1.0"
+authors = ["Thomas Nicollet <thomas.nicollet@epitech.eu>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+spatialos-sys = { git = "https://github.com/Project-StarDust/spatialos-sys.git" }
