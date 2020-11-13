@@ -81,6 +81,7 @@ pub unsafe extern "C" fn component_data_deserialize<T: Component>(
     source: *mut Schema_ComponentData,
     handle_out: *mut *mut ComponentDataHandle,
 ) -> u8 {
+    assert_eq!(component_id, T::ID);
     let source = source.into();
     let new_data = Box::new(T::component_data_deserialize(
         component_id,
@@ -97,6 +98,7 @@ pub unsafe extern "C" fn component_data_serialize<T: Component>(
     handle: *mut ComponentDataHandle,
     target_out: *mut *mut Schema_ComponentData,
 ) {
+    assert_eq!(component_id, T::ID);
     let handle = handle as *mut T::Data;
     let mut data = Box::from_raw(handle);
     let component_data = T::component_data_serialize(component_id, user_data, &mut *data).into();
@@ -105,28 +107,31 @@ pub unsafe extern "C" fn component_data_serialize<T: Component>(
 }
 
 pub unsafe extern "C" fn component_update_deserialize<T: Component>(
-    _: ComponentId,
+    component_id: ComponentId,
     _: *mut c_void,
     _source: *mut Schema_ComponentUpdate,
     _handle_out: *mut *mut ComponentUpdateHandle,
 ) -> u8 {
+    assert_eq!(component_id, T::ID);
     unimplemented!()
 }
 
 pub unsafe extern "C" fn component_update_serialize<T: Component>(
-    _: ComponentId,
+    component_id: ComponentId,
     _: *mut c_void,
     _handle: *mut ComponentUpdateHandle,
     _target_out: *mut *mut Schema_ComponentUpdate,
 ) {
+    assert_eq!(component_id, T::ID);
     unimplemented!()
 }
 
 pub unsafe extern "C" fn component_data_copy<T: Component>(
-    _: ComponentId,
+    component_id: ComponentId,
     _: *mut c_void,
     handle: *mut ComponentDataHandle,
 ) -> *mut ComponentDataHandle {
+    assert_eq!(component_id, T::ID);
     let handle = handle as *mut T::Data;
     let ptr = Box::from_raw(handle);
     let new_data = ptr.clone();
@@ -135,10 +140,11 @@ pub unsafe extern "C" fn component_data_copy<T: Component>(
 }
 
 pub unsafe extern "C" fn component_data_free<T>(
-    _: ComponentId,
+    component_id: ComponentId,
     _: *mut c_void,
     handle: *mut ComponentDataHandle,
 ) {
+    assert_eq!(component_id, T::ID);
     Box::from_raw(handle);
 }
 
@@ -147,6 +153,7 @@ pub unsafe extern "C" fn component_update_free<T: Component>(
     user_data: *mut c_void,
     handle: *mut ComponentUpdateHandle,
 ) {
+    assert_eq!(component_id, T::ID);
     let handle = handle as *mut T::Update;
     let handle = Box::from_raw(handle);
     T::component_update_free(component_id, user_data, *handle)
@@ -157,6 +164,7 @@ pub unsafe extern "C" fn component_update_copy<T: Component>(
     user_data: *mut c_void,
     handle: *mut ComponentUpdateHandle,
 ) -> *mut ComponentUpdateHandle {
+    assert_eq!(component_id, T::ID);
     let handle = handle as *mut T::Update;
     let ptr = Box::from_raw(handle);
     let new_data = Box::new(T::component_update_copy(component_id, user_data, &*ptr));
