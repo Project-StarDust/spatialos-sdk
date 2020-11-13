@@ -8,7 +8,8 @@ use spatialos_sys::Schema_ComponentData;
 use spatialos_sys::Schema_ComponentUpdate;
 use std::os::raw::c_void;
 
-pub trait Component: Clone {
+pub trait Component: Sized {
+    type Data: Clone;
     type Update: Clone;
 
     const ID: ComponentId;
@@ -17,12 +18,12 @@ pub trait Component: Clone {
         component_id: ComponentId,
         user_data: *mut c_void,
         source: ComponentData,
-    ) -> Self;
+    ) -> Self::Data;
 
     fn component_data_serialize(
         component_id: ComponentId,
         user_data: *mut c_void,
-        handle: &mut Self,
+        handle: &mut Self::Data,
     ) -> ComponentData;
 
     fn component_update_deserialize(
@@ -86,7 +87,7 @@ pub unsafe extern "C" fn component_data_deserialize<T: Component>(
         user_data,
         source,
     ));
-    *(handle_out as *mut *mut T) = Box::into_raw(new_data);
+    *(handle_out as *mut *mut T::Data) = Box::into_raw(new_data);
     1
 }
 
@@ -96,7 +97,7 @@ pub unsafe extern "C" fn component_data_serialize<T: Component>(
     handle: *mut ComponentDataHandle,
     target_out: *mut *mut Schema_ComponentData,
 ) {
-    let handle = handle as *mut T;
+    let handle = handle as *mut T::Data;
     let mut data = Box::from_raw(handle);
     let component_data = T::component_data_serialize(component_id, user_data, &mut *data).into();
     *target_out = component_data;
@@ -126,7 +127,7 @@ pub unsafe extern "C" fn component_data_copy<T: Component>(
     _: *mut c_void,
     handle: *mut ComponentDataHandle,
 ) -> *mut ComponentDataHandle {
-    let handle = handle as *mut T;
+    let handle = handle as *mut T::Data;
     let ptr = Box::from_raw(handle);
     let new_data = ptr.clone();
     Box::into_raw(ptr);
