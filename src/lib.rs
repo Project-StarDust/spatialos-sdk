@@ -139,7 +139,7 @@ pub unsafe extern "C" fn component_data_copy<T: Component>(
     Box::into_raw(new_data) as *mut ComponentDataHandle
 }
 
-pub unsafe extern "C" fn component_data_free<T>(
+pub unsafe extern "C" fn component_data_free<T: Component>(
     component_id: ComponentId,
     _: *mut c_void,
     handle: *mut ComponentDataHandle,
