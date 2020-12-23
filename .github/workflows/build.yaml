@@ -28,7 +28,7 @@ jobs:
           components: rustfmt
 
       - name: get-spatial-cli
-        uses: Project-StarDust/get-spatial-cli-action@v1.3
+        uses: Project-StarDust/get-spatial-cli-action@v1.4
         with:
           refresh_token: ${{secrets.SPATIAL_REFRESH_TOKEN}}
 

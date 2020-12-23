@@ -15,6 +15,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
+      - name: get-spatial-cli
+        uses: Project-StarDust/get-spatial-cli-action@v1.4
+        with:
+          refresh_token: ${{secrets.SPATIAL_REFRESH_TOKEN}}
+
       - name: Generate code coverage
         run: cargo tarpaulin --verbose --all-features --workspace --timeout 120 --out Xml
 
