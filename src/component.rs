@@ -74,6 +74,12 @@ pub trait Component: Sized {
     }
 }
 
+/// You shouldn't have to call this function yourself
+///
+/// # Safety
+///
+/// This function is used as part of a FFI connection with Improbable's C SDK
+/// It must be marked unsafe to be on par with the C interface
 pub unsafe extern "C" fn component_data_deserialize<T: Component>(
     component_id: ComponentId,
     user_data: *mut c_void,
@@ -91,6 +97,12 @@ pub unsafe extern "C" fn component_data_deserialize<T: Component>(
     1
 }
 
+/// You shouldn't have to call this function yourself
+///
+/// # Safety
+///
+/// This function is used as part of a FFI connection with Improbable's C SDK
+/// It must be marked unsafe to be on par with the C interface
 pub unsafe extern "C" fn component_data_serialize<T: Component>(
     component_id: ComponentId,
     user_data: *mut c_void,
@@ -105,6 +117,12 @@ pub unsafe extern "C" fn component_data_serialize<T: Component>(
     Box::into_raw(data);
 }
 
+/// You shouldn't have to call this function yourself
+///
+/// # Safety
+///
+/// This function is used as part of a FFI connection with Improbable's C SDK
+/// It must be marked unsafe to be on par with the C interface
 pub unsafe extern "C" fn component_update_deserialize<T: Component>(
     component_id: ComponentId,
     _: *mut c_void,
@@ -115,6 +133,12 @@ pub unsafe extern "C" fn component_update_deserialize<T: Component>(
     unimplemented!()
 }
 
+/// You shouldn't have to call this function yourself
+///
+/// # Safety
+///
+/// This function is used as part of a FFI connection with Improbable's C SDK
+/// It must be marked unsafe to be on par with the C interface
 pub unsafe extern "C" fn component_update_serialize<T: Component>(
     component_id: ComponentId,
     _: *mut c_void,
@@ -125,6 +149,12 @@ pub unsafe extern "C" fn component_update_serialize<T: Component>(
     unimplemented!()
 }
 
+/// You shouldn't have to call this function yourself
+///
+/// # Safety
+///
+/// This function is used as part of a FFI connection with Improbable's C SDK
+/// It must be marked unsafe to be on par with the C interface
 pub unsafe extern "C" fn component_data_copy<T: Component>(
     component_id: ComponentId,
     _: *mut c_void,
@@ -138,6 +168,12 @@ pub unsafe extern "C" fn component_data_copy<T: Component>(
     Box::into_raw(new_data) as *mut ComponentDataHandle
 }
 
+/// You shouldn't have to call this function yourself
+///
+/// # Safety
+///
+/// This function is used as part of a FFI connection with Improbable's C SDK
+/// It must be marked unsafe to be on par with the C interface
 pub unsafe extern "C" fn component_data_free<T: Component>(
     component_id: ComponentId,
     _: *mut c_void,
@@ -147,6 +183,12 @@ pub unsafe extern "C" fn component_data_free<T: Component>(
     Box::from_raw(handle);
 }
 
+/// You shouldn't have to call this function yourself
+///
+/// # Safety
+///
+/// This function is used as part of a FFI connection with Improbable's C SDK
+/// It must be marked unsafe to be on par with the C interface
 pub unsafe extern "C" fn component_update_free<T: Component>(
     component_id: ComponentId,
     user_data: *mut c_void,
@@ -158,6 +200,12 @@ pub unsafe extern "C" fn component_update_free<T: Component>(
     T::component_update_free(component_id, user_data, *handle)
 }
 
+/// You shouldn't have to call this function yourself
+///
+/// # Safety
+///
+/// This function is used as part of a FFI connection with Improbable's C SDK
+/// It must be marked unsafe to be on par with the C interface
 pub unsafe extern "C" fn component_update_copy<T: Component>(
     component_id: ComponentId,
     user_data: *mut c_void,

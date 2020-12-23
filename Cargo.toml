@@ -3,6 +3,10 @@ name = "spatialos-sdk"
 version = "0.1.1"
 authors = ["Thomas Nicollet <thomas.nicollet@epitech.eu>"]
 edition = "2018"
+license = "GPL-3.0-or-later"
+repository = "https://github.com/Project-StarDust/spatialos-sdk"
+description = "High-level SDK built around spatialos-sys"
+readme = "README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
