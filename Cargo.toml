@@ -1,6 +1,6 @@
 [package]
 name = "spatialos-sdk"
-version = "0.1.4"
+version = "0.1.5"
 authors = ["Thomas Nicollet <thomas.nicollet@epitech.eu>"]
 edition = "2018"
 license = "GPL-3.0-or-later"
@@ -11,4 +11,4 @@ readme = "README.md"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-spatialos-sdk = "0.1"
+spatialos = "0.1"

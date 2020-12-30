@@ -1,4 +1,4 @@
-use spatialos_sys::schema::Object;
+use spatialos::schema::Object;
 use std::os::raw::c_void;
 
 pub trait Type: Sized {

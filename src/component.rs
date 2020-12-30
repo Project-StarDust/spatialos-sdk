@@ -1,11 +1,11 @@
-use crate::sys_exports::Schema_ComponentData;
-use crate::sys_exports::Schema_ComponentUpdate;
-use spatialos_sys::schema::ComponentData;
-use spatialos_sys::schema::ComponentUpdate;
-use spatialos_sys::worker::component_vtable::ComponentVtable;
-use spatialos_sys::worker::ComponentDataHandle;
-use spatialos_sys::worker::ComponentId;
-use spatialos_sys::worker::ComponentUpdateHandle;
+use spatialos::schema::ComponentData;
+use spatialos::schema::ComponentUpdate;
+use spatialos::worker::component_vtable::ComponentVtable;
+use spatialos::worker::ComponentDataHandle;
+use spatialos::worker::ComponentId;
+use spatialos::worker::ComponentUpdateHandle;
+use spatialos::private_exports::Schema_ComponentData;
+use spatialos::private_exports::Schema_ComponentUpdate;
 use std::os::raw::c_void;
 
 pub trait Component: Sized {
