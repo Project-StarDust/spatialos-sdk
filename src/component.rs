@@ -1,11 +1,10 @@
-use spatialos::schema::ComponentData;
-use spatialos::schema::ComponentUpdate;
-use spatialos::worker::component_vtable::ComponentVtable;
-use spatialos::worker::ComponentDataHandle;
-use spatialos::worker::ComponentId;
-use spatialos::worker::ComponentUpdateHandle;
-use spatialos::private_exports::Schema_ComponentData;
-use spatialos::private_exports::Schema_ComponentUpdate;
+use spatialos::{
+    schema::{ffi, ComponentData, ComponentUpdate},
+    worker::{
+        component_vtable::ComponentVtable, CommandIndex, CommandRequestHandle,
+        CommandResponseHandle, ComponentDataHandle, ComponentId, ComponentUpdateHandle,
+    },
+};
 use std::os::raw::c_void;
 
 pub trait Component: Sized {
@@ -54,14 +53,14 @@ pub trait Component: Sized {
         ComponentVtable {
             component_id: Self::ID,
             user_data: std::ptr::null_mut(),
-            command_request_free: None,
-            command_request_copy: None,
-            command_request_deserialize: None,
-            command_request_serialize: None,
-            command_response_free: None,
-            command_response_copy: None,
-            command_response_deserialize: None,
-            command_response_serialize: None,
+            command_request_free: Some(command_request_free::<Self>),
+            command_request_copy: Some(command_request_copy::<Self>),
+            command_request_deserialize: Some(command_request_deserialize::<Self>),
+            command_request_serialize: Some(command_request_serialize::<Self>),
+            command_response_free: Some(command_response_free::<Self>),
+            command_response_copy: Some(command_response_copy::<Self>),
+            command_response_deserialize: Some(command_response_deserialize::<Self>),
+            command_response_serialize: Some(command_response_serialize::<Self>),
             component_data_free: Some(component_data_free::<Self>),
             component_data_copy: Some(component_data_copy::<Self>),
             component_data_deserialize: Some(component_data_deserialize::<Self>),
@@ -83,7 +82,7 @@ pub trait Component: Sized {
 pub unsafe extern "C" fn component_data_deserialize<T: Component>(
     component_id: ComponentId,
     user_data: *mut c_void,
-    source: *mut Schema_ComponentData,
+    source: *mut ffi::ComponentData,
     handle_out: *mut *mut ComponentDataHandle,
 ) -> u8 {
     assert_eq!(component_id, T::ID);
@@ -107,7 +106,7 @@ pub unsafe extern "C" fn component_data_serialize<T: Component>(
     component_id: ComponentId,
     user_data: *mut c_void,
     handle: *mut ComponentDataHandle,
-    target_out: *mut *mut Schema_ComponentData,
+    target_out: *mut *mut ffi::ComponentData,
 ) {
     assert_eq!(component_id, T::ID);
     let handle = handle as *mut T::Data;
@@ -126,7 +125,7 @@ pub unsafe extern "C" fn component_data_serialize<T: Component>(
 pub unsafe extern "C" fn component_update_deserialize<T: Component>(
     component_id: ComponentId,
     _: *mut c_void,
-    _source: *mut Schema_ComponentUpdate,
+    _source: *mut ffi::ComponentUpdate,
     _handle_out: *mut *mut ComponentUpdateHandle,
 ) -> u8 {
     assert_eq!(component_id, T::ID);
@@ -143,7 +142,7 @@ pub unsafe extern "C" fn component_update_serialize<T: Component>(
     component_id: ComponentId,
     _: *mut c_void,
     _handle: *mut ComponentUpdateHandle,
-    _target_out: *mut *mut Schema_ComponentUpdate,
+    _target_out: *mut *mut ffi::ComponentUpdate,
 ) {
     assert_eq!(component_id, T::ID);
     unimplemented!()
@@ -218,4 +217,134 @@ pub unsafe extern "C" fn component_update_copy<T: Component>(
 
     Box::into_raw(ptr);
     Box::into_raw(new_data) as *mut ComponentDataHandle
+}
+
+/// You shouldn't have to call this function yourself
+///
+/// # Safety
+///
+/// This function is used as part of a FFI connection with Improbable's C SDK
+/// It must be marked unsafe to be on par with the C interface
+pub unsafe extern "C" fn command_request_free<T: Component>(
+    component_id: ComponentId,
+    _command_index: CommandIndex,
+    _user_data: *mut c_void,
+    _handle: *mut CommandRequestHandle,
+) {
+    assert_eq!(component_id, T::ID);
+}
+
+/// You shouldn't have to call this function yourself
+///
+/// # Safety
+///
+/// This function is used as part of a FFI connection with Improbable's C SDK
+/// It must be marked unsafe to be on par with the C interface
+pub unsafe extern "C" fn command_request_copy<T: Component>(
+    component_id: ComponentId,
+    _command_index: CommandIndex,
+    _user_data: *mut c_void,
+    _handle: *mut CommandRequestHandle,
+) -> *mut CommandRequestHandle {
+    assert_eq!(component_id, T::ID);
+    todo!()
+}
+
+/// You shouldn't have to call this function yourself
+///
+/// # Safety
+///
+/// This function is used as part of a FFI connection with Improbable's C SDK
+/// It must be marked unsafe to be on par with the C interface
+pub unsafe extern "C" fn command_request_deserialize<T: Component>(
+    component_id: ComponentId,
+    _command_index: CommandIndex,
+    _user_data: *mut c_void,
+    _source: *mut ffi::CommandRequest,
+    _handle_out: *mut *mut CommandRequestHandle,
+) -> u8 {
+    assert_eq!(component_id, T::ID);
+    todo!()
+}
+
+/// You shouldn't have to call this function yourself
+///
+/// # Safety
+///
+/// This function is used as part of a FFI connection with Improbable's C SDK
+/// It must be marked unsafe to be on par with the C interface
+pub unsafe extern "C" fn command_request_serialize<T: Component>(
+    component_id: ComponentId,
+    _command_index: CommandIndex,
+    _user_data: *mut c_void,
+    _handle: *mut CommandRequestHandle,
+    _target_out: *mut *mut ffi::CommandRequest,
+) {
+    assert_eq!(component_id, T::ID);
+    todo!()
+}
+
+/// You shouldn't have to call this function yourself
+///
+/// # Safety
+///
+/// This function is used as part of a FFI connection with Improbable's C SDK
+/// It must be marked unsafe to be on par with the C interface
+pub unsafe extern "C" fn command_response_free<T: Component>(
+    component_id: ComponentId,
+    _command_index: CommandIndex,
+    _user_data: *mut c_void,
+    _handle: *mut CommandResponseHandle,
+) {
+    assert_eq!(component_id, T::ID);
+}
+
+/// You shouldn't have to call this function yourself
+///
+/// # Safety
+///
+/// This function is used as part of a FFI connection with Improbable's C SDK
+/// It must be marked unsafe to be on par with the C interface
+pub unsafe extern "C" fn command_response_copy<T: Component>(
+    component_id: ComponentId,
+    _command_index: CommandIndex,
+    _user_data: *mut c_void,
+    _handle: *mut CommandResponseHandle,
+) -> *mut CommandResponseHandle {
+    assert_eq!(component_id, T::ID);
+    todo!()
+}
+
+/// You shouldn't have to call this function yourself
+///
+/// # Safety
+///
+/// This function is used as part of a FFI connection with Improbable's C SDK
+/// It must be marked unsafe to be on par with the C interface
+pub unsafe extern "C" fn command_response_deserialize<T: Component>(
+    component_id: ComponentId,
+    _command_index: CommandIndex,
+    _user_data: *mut c_void,
+    _source: *mut ffi::CommandResponse,
+    _handle_out: *mut *mut CommandResponseHandle,
+) -> u8 {
+    assert_eq!(component_id, T::ID);
+    todo!()
+}
+
+/// You shouldn't have to call this function yourself
+///
+/// # Safety
+///
+/// This function is used as part of a FFI connection with Improbable's C SDK
+/// It must be marked unsafe to be on par with the C interface
+pub unsafe extern "C" fn command_response_serialize<T: Component>(
+    component_id: ComponentId,
+    _command_index: CommandIndex,
+    _user_data: *mut c_void,
+    _handle: *mut CommandResponseHandle,
+    _target_out: *mut *mut ffi::CommandResponse,
+) {
+    assert_eq!(component_id, T::ID);
+    todo!()
 }
